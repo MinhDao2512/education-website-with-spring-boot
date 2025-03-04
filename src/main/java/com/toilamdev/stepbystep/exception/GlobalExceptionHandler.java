@@ -1,9 +1,11 @@
 package com.toilamdev.stepbystep.exception;
 
-import com.toilamdev.stepbystep.controller.BaseController;
 import com.toilamdev.stepbystep.dto.response.ApiResponseDTO;
+import com.toilamdev.stepbystep.dto.response.ResponseErrorDTO;
+import com.toilamdev.stepbystep.service.impl.ResponseService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -17,7 +19,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestControllerAdvice
-public class GlobalExceptionHandler extends BaseController {
+@RequiredArgsConstructor
+public class GlobalExceptionHandler {
+    private final ResponseService responseService;
+
     @ExceptionHandler({MethodArgumentNotValidException.class, ConstraintViolationException.class,
             MethodArgumentTypeMismatchException.class})
     public ResponseEntity<ApiResponseDTO> handleErrorClient(Exception e, HttpServletRequest request) {
@@ -27,9 +32,9 @@ public class GlobalExceptionHandler extends BaseController {
             bindingResult.getFieldErrors().forEach(fileError
                     -> errors.put(fileError.getField(), fileError.getDefaultMessage()));
 
-            return fail(request, HttpStatus.BAD_REQUEST, "Login fail.", errors);
+            return this.responseService.fail(request, HttpStatus.BAD_REQUEST, "Login fail.", errors);
         } else {
-            return fail(request, HttpStatus.BAD_REQUEST, "Id must not valid.",
+            return this.responseService.fail(request, HttpStatus.BAD_REQUEST, "Id must not valid.",
                     Collections.singletonMap("error", e.getMessage()));
         }
     }

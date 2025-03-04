@@ -34,4 +34,16 @@ public class Course extends BaseEntity {
 
     @OneToOne(mappedBy = "course", fetch = FetchType.LAZY)
     private OrderDetail orderDetail;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
+
+    @ManyToMany
+    @JoinTable(
+            name = "course_tags",
+            joinColumns = @JoinColumn(name = "course_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
+    private Set<Tag> tags;
 }

@@ -1,6 +1,5 @@
 package com.toilamdev.stepbystep.entity;
 
-import com.toilamdev.stepbystep.utils.AuthenticationUtils;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,20 +25,26 @@ public abstract class BaseEntity {
     private String createdBy;
 
     @Column(nullable = false)
-    private Instant createAt;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Instant createdAt;
+
     private String updatedBy;
+
+    @Temporal(TemporalType.TIMESTAMP)
     private Instant updatedAt;
 
     @PrePersist
     public void create() {
-        this.createdBy = AuthenticationUtils.getPrincipal().orElse("Anonymous");
-        this.createAt = Instant.now();
+//        this.createdBy = AuthenticationUtils.getPrincipal().orElse("Anonymous");
+        this.createdBy = "PRODUCT OWNER";
+        this.createdAt = Instant.now();
         this.isActive = true;
     }
 
     @PreUpdate
     public void update() {
-        this.updatedBy = AuthenticationUtils.getPrincipal().orElse("Anonymous");
-        this.updatedAt = Instant.now();
+//        this.updatedBy = AuthenticationUtils.getPrincipal().orElse("Anonymous");
+        this.createdBy = "PRODUCT OWNER";
+        this.createdAt = Instant.now();
     }
 }

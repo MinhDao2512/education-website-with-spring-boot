@@ -2,15 +2,17 @@ package com.toilamdev.stepbystep.entity;
 
 import com.toilamdev.stepbystep.enums.PermissionName;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Set;
 
 @Entity
 @Table(name = "permissions")
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
+@Builder
 public class Permission extends BaseEntity {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)

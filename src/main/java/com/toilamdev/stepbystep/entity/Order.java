@@ -15,7 +15,11 @@ import java.util.Set;
 public class Order extends BaseEntity {
     private Integer count;
     private Double totalPrice;
+
+    @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
+
+    @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -3,3 +3,5 @@ spring:
     name: stepbystep
   profiles:
     active: dev
+  banner:
+    location: banner.txt
