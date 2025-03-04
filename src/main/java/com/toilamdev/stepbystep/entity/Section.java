@@ -1,8 +1,7 @@
 package com.toilamdev.stepbystep.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Set;
 
@@ -10,6 +9,9 @@ import java.util.Set;
 @Table(name = "sections")
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Section extends BaseEntity {
     @Column(nullable = false)
     private String title;

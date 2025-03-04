@@ -1,8 +1,7 @@
 package com.toilamdev.stepbystep.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Set;
 
@@ -10,6 +9,9 @@ import java.util.Set;
 @Table(name = "users")
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class User extends BaseEntity {
     @Column(nullable = false, length = 100)
     private String firstName;
@@ -46,4 +48,7 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private Set<Order> orders;
+
+    @OneToMany(mappedBy = "student", fetch = FetchType.LAZY)
+    private Set<Enrollment> enrollments;
 }

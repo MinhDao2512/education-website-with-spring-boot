@@ -3,8 +3,7 @@ package com.toilamdev.stepbystep.entity;
 import com.toilamdev.stepbystep.enums.PaymentMethod;
 import com.toilamdev.stepbystep.enums.PaymentStatus;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Set;
 
@@ -12,6 +11,9 @@ import java.util.Set;
 @Table(name = "orders")
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Order extends BaseEntity {
     private Integer count;
     private Double totalPrice;
