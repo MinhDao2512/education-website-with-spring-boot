@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -20,5 +19,10 @@ public class RoleService implements IRoleService {
     @Override
     public List<Role> getAllRoles() {
         return this.roleRepository.findAll();
+    }
+
+    @Override
+    public Role getRoleByName(RoleName roleName) {
+        return this.roleRepository.findRoleByName(roleName);
     }
 }

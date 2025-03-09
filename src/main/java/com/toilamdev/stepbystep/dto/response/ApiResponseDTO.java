@@ -1,5 +1,6 @@
 package com.toilamdev.stepbystep.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 
@@ -9,6 +10,8 @@ import java.time.Instant;
 public class ApiResponseDTO {
     private final boolean success;
     private final int status;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
     private final Instant timestamp;
     private final String message;
 

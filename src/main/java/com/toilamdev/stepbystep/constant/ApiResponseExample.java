@@ -20,7 +20,7 @@ public class ApiResponseExample {
               "success": true,
               "status": 201,
               "timestamp": "2025-02-27T14:43:40.144Z",
-              "message": "Add data successfully",
+              "message": "Create successfully",
               "data":[ 
                   {
                       "field_name": "value"
@@ -43,7 +43,7 @@ public class ApiResponseExample {
               "success": false,
               "status": 400,
               "timestamp": "2025-02-27T14:43:40.144Z",
-              "message": "Parameters must not valid",
+              "message": "Parameters is invalid",
               "path": "/api/v1/...",
               "errors": [
                   {

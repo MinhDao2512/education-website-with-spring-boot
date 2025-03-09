@@ -28,7 +28,7 @@ public class User extends BaseEntity {
     @Column(nullable = false, unique = true, length = 10)
     private String phoneNumber;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<UserRole> userRoles;
 
     @OneToMany(mappedBy = "instructor", fetch = FetchType.LAZY)

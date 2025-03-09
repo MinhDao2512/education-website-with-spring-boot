@@ -1,9 +1,11 @@
 package com.toilamdev.stepbystep.controller;
 
 import com.toilamdev.stepbystep.constant.ApiResponseExample;
-import com.toilamdev.stepbystep.dto.request.UserLoginDTO;
+import com.toilamdev.stepbystep.dto.request.UserRegisterDTO;
 import com.toilamdev.stepbystep.dto.response.ApiResponseDTO;
+import com.toilamdev.stepbystep.entity.User;
 import com.toilamdev.stepbystep.service.impl.ResponseService;
+import com.toilamdev.stepbystep.service.impl.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -20,21 +22,32 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Collections;
+
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 @Tag(name = "Auth Controller")
 public class AuthController {
     private final ResponseService responseService;
+    private final UserService userService;
 
-    @Operation(summary = "Login", description = "Login with Email and Password")
+    @Operation(summary = "Register Account", description = "Create New User")
     @ApiResponses({
-            @ApiResponse(responseCode = "400", description = "Bad request",
-                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            examples = @ExampleObject(value = ApiResponseExample.BAD_REQUEST_400)))
+            @ApiResponse(description = "Created", responseCode = "201", content = @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    examples = @ExampleObject(value = ApiResponseExample.CREATED_201)
+            )),
+            @ApiResponse(description = "Bad request", responseCode = "400", content = @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    examples = @ExampleObject(value = ApiResponseExample.BAD_REQUEST_400)
+            ))
     })
-    @PostMapping("/login")
-    public ResponseEntity<ApiResponseDTO> login(@Valid @RequestBody UserLoginDTO userLogin) {
-        return this.responseService.success(HttpStatus.OK, "Login Success.");
+    @PostMapping("/register")
+    public ResponseEntity<ApiResponseDTO> registerAccount(@Valid @RequestBody UserRegisterDTO userRegisterDTO) {
+        User user = this.userService.saveUser(userRegisterDTO);
+
+        return this.responseService.success(HttpStatus.CREATED, "Create new account successfully",
+                Collections.singletonMap("user_id", user.getId()));
     }
 }

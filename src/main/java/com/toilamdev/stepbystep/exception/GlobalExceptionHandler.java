@@ -1,7 +1,6 @@
 package com.toilamdev.stepbystep.exception;
 
 import com.toilamdev.stepbystep.dto.response.ApiResponseDTO;
-import com.toilamdev.stepbystep.dto.response.ResponseErrorDTO;
 import com.toilamdev.stepbystep.service.impl.ResponseService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
