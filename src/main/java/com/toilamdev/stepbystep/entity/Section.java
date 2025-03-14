@@ -18,7 +18,7 @@ public class Section extends BaseEntity {
 
     private float totalTime;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "course_id")
     private Course course;
 

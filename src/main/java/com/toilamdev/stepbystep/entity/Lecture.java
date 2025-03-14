@@ -23,7 +23,7 @@ public class Lecture extends BaseEntity {
     @Column(nullable = false)
     private boolean isPreview;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "section_id")
     private Section section;
 

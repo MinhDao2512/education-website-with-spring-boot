@@ -11,11 +11,11 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class RolePermission extends BaseEntity {
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id")
     private Role role;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "permission_id")
     private Permission permission;
 }

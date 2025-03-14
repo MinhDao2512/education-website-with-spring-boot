@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -44,10 +45,15 @@ public class AuthController {
             ))
     })
     @PostMapping("/register")
-    public ResponseEntity<ApiResponseDTO> registerAccount(@Valid @RequestBody UserRegisterDTO userRegisterDTO) {
-        User user = this.userService.saveUser(userRegisterDTO);
+    public ResponseEntity<ApiResponseDTO> registerAccount(@Valid @RequestBody UserRegisterDTO userRegisterDTO,
+                                                          HttpServletRequest request) {
+        try {
+            User user = this.userService.saveUser(userRegisterDTO);
 
-        return this.responseService.success(HttpStatus.CREATED, "Create new account successfully",
-                Collections.singletonMap("user_id", user.getId()));
+            return this.responseService.success(HttpStatus.CREATED, "Create new account success",
+                    Collections.singletonMap("user_id", user.getId()));
+        } catch (RuntimeException e) {
+            return this.responseService.fail(request, HttpStatus.INTERNAL_SERVER_ERROR, "Create new account fail");
+        }
     }
 }

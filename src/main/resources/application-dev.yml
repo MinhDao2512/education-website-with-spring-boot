@@ -10,13 +10,13 @@ spring:
     password: "060202"
     driver-class-name: org.postgresql.Driver
   jpa:
+    open-in-view: false
     hibernate:
       ddl-auto: update
     show-sql: true
     properties:
       hibernate:
         format_sql: true
-
 springdoc:
   api-docs:
     enabled: true

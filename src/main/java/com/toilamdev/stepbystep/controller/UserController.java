@@ -4,6 +4,7 @@ import com.toilamdev.stepbystep.constant.ApiResponseExample;
 import com.toilamdev.stepbystep.dto.response.ApiResponseDTO;
 import com.toilamdev.stepbystep.entity.User;
 import com.toilamdev.stepbystep.service.impl.ResponseService;
+import com.toilamdev.stepbystep.service.impl.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -29,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private final ResponseService responseService;
+    private final UserService userService;
 
     @Operation(summary = "Get users", description = "Get list users")
     @ApiResponses({
@@ -39,10 +41,7 @@ public class UserController {
     })
     @GetMapping
     public ResponseEntity<ApiResponseDTO> getAllUsers() {
-        User user = new User();
-        user.setFirstName("Dao");
-        user.setLastName("Nguyen Minh");
-        return this.responseService.success(HttpStatus.OK, "Get list users successfully", user);
+        return this.responseService.success(HttpStatus.OK, "Get list users successfully");
     }
 
     @Operation(summary = "Get user", description = "Get user by id")

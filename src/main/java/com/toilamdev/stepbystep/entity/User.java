@@ -28,7 +28,7 @@ public class User extends BaseEntity {
     @Column(nullable = false, unique = true, length = 10)
     private String phoneNumber;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private Set<UserRole> userRoles;
 
     @OneToMany(mappedBy = "instructor", fetch = FetchType.LAZY)
@@ -43,7 +43,7 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "contributor", fetch = FetchType.LAZY)
     private Set<Post> posts;
 
-    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "user", fetch = FetchType.EAGER)
     private Cart cart;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
@@ -51,4 +51,10 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "student", fetch = FetchType.LAZY)
     private Set<Enrollment> enrollments;
+
+    public User(String email, String firstName, String lastName) {
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
 }

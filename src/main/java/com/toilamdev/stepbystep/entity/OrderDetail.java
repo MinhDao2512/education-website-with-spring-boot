@@ -14,11 +14,11 @@ public class OrderDetail extends BaseEntity {
     private Integer count;
     private Double totalPrice;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "order_id")
     private Order order;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "course_id")
     private Course course;
 }

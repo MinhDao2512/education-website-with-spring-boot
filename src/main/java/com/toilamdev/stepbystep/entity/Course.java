@@ -21,7 +21,7 @@ public class Course extends BaseEntity {
     private Double price;
     private Float totalTime;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "instructor_id")
     private User instructor;
 
@@ -31,13 +31,13 @@ public class Course extends BaseEntity {
     @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
     private Set<Review> reviews;
 
-    @OneToOne(mappedBy = "course", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "course", fetch = FetchType.EAGER)
     private CartDetail cartDetail;
 
-    @OneToOne(mappedBy = "course", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "course", fetch = FetchType.EAGER)
     private OrderDetail orderDetail;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id")
     private Category category;
 

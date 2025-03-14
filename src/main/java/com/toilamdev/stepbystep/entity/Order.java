@@ -24,7 +24,7 @@ public class Order extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
 
