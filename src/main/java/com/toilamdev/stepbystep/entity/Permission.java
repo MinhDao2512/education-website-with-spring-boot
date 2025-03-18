@@ -18,6 +18,7 @@ public class Permission extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private PermissionName name;
 
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @OneToMany(mappedBy = "permission", fetch = FetchType.LAZY)

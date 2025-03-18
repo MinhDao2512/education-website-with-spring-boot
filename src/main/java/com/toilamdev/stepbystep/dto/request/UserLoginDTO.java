@@ -5,9 +5,9 @@ import lombok.Getter;
 
 @Getter
 public class UserLoginDTO {
-    @NotBlank(message = "Email must not empty.")
+    @NotBlank(message = "Bạn chưa nhập thông tin này")
     private String email;
 
-    @NotBlank(message = "Password must not empty")
+    @NotBlank(message = "Bạn chưa nhập thông tin này")
     private String password;
 }

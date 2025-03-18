@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/v1/roles")
+@RequestMapping("${api.version}/roles")
 @Slf4j
 @RequiredArgsConstructor
 @Tag(name = "Role Controller")

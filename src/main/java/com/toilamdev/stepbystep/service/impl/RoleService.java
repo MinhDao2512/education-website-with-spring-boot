@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Slf4j
@@ -25,7 +24,8 @@ public class RoleService implements IRoleService {
 
     @Override
     public Role getRoleByName(RoleName roleName) {
-        Optional<Role> roleOptional = Optional.ofNullable(this.roleRepository.findRoleByName(roleName));
-        return roleOptional.orElseThrow(() -> new GlobalException.RoleNotFoundException("Role not found"));
+        log.info("Bắt đầu tìm kiếm Role theo tên: {}", roleName);
+        return this.roleRepository.findRoleByName(roleName).orElseThrow(() ->
+                new GlobalException.RoleNotFoundException("Role not found"));
     }
 }

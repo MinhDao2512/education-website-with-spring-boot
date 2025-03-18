@@ -1,5 +1,6 @@
 package com.toilamdev.stepbystep.service.impl;
 
+import com.toilamdev.stepbystep.dto.request.UserLoginDTO;
 import com.toilamdev.stepbystep.dto.request.UserRegisterDTO;
 import com.toilamdev.stepbystep.entity.Role;
 import com.toilamdev.stepbystep.entity.User;
@@ -10,13 +11,23 @@ import com.toilamdev.stepbystep.repository.UserRepository;
 import com.toilamdev.stepbystep.repository.UserRoleRepository;
 import com.toilamdev.stepbystep.service.IUserService;
 import com.toilamdev.stepbystep.utils.FormatUtils;
+import com.toilamdev.stepbystep.utils.JWTokenUtils;
+import jakarta.servlet.ServletContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -26,6 +37,8 @@ public class UserService implements IUserService {
     private final PasswordEncoder passwordEncoder;
     private final RoleService roleService;
     private final UserRoleRepository userRoleRepository;
+    private final AuthenticationManager authenticationManager;
+    private final JWTokenUtils jwTokenUtils;
 
     @Override
     public boolean checkUserExistsByEmail(String email) {
@@ -71,5 +84,37 @@ public class UserService implements IUserService {
             log.error(e.getMessage(), e);
             throw new RuntimeException("Tạo mới User thất bại");
         }
+    }
+
+    @Override
+    public User fetchUserByEmail(String email) {
+        log.info("Bắt đầu tìm User với email: {}", email);
+        return this.userRepository.findUserByEmail(email).orElseThrow(() ->
+                new UsernameNotFoundException("Không tìm thấy User phù hợp với email: " + email));
+    }
+
+    @Override
+    public String login(UserLoginDTO userLoginDTO) {
+        log.info("Bắt đầu xác thực tài khoản: {}", userLoginDTO.getEmail());
+        User user = this.userRepository.findUserByEmail(userLoginDTO.getEmail()).orElseThrow(
+                () -> new UsernameNotFoundException("Email hoặc Mật khẩu không hợp lệ")
+        );
+
+        if (!passwordEncoder.matches(userLoginDTO.getPassword(), user.getPassword())) {
+            throw new BadCredentialsException("Email hoăt Mật khẩu không chính xác");
+        }
+
+        Authentication authentication = this.authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        userLoginDTO.getEmail(),
+                        userLoginDTO.getPassword(),
+                        user.getAuthorities()
+                )
+        );
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        log.info("Xác thực tài khoản thành công");
+        return this.jwTokenUtils.generateToken(user);
     }
 }

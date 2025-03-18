@@ -6,4 +6,10 @@ public class GlobalException {
             super(message);
         }
     }
+
+    public static class JwtGenerationException extends RuntimeException{
+        public JwtGenerationException(String message){
+            super(message);
+        }
+    }
 }
