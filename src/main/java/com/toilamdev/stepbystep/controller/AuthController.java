@@ -81,7 +81,8 @@ public class AuthController {
                                                        HttpServletRequest request) {
         try {
             String token = this.userService.login(userLoginDTO);
-            return this.responseService.success(HttpStatus.OK, "Login Success", token);
+            return this.responseService.success(HttpStatus.OK, "Login Success",
+                    Collections.singletonMap("access-token", token));
         } catch (UsernameNotFoundException e ) {
             return this.responseService.fail(request, HttpStatus.BAD_REQUEST, "Login Fail",
                     Collections.singletonMap("message", e.getMessage()));
