@@ -11,6 +11,7 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -30,20 +31,20 @@ public class JWTokenUtils {
     private String secretKey;
 
     @PostConstruct
-    public void validateConfig(){
-        if(this.secretKey == null || this.secretKey.isBlank()){
+    public void validateConfig() {
+        if (this.secretKey == null || this.secretKey.isBlank()) {
             log.warn("Dont have a secret key");
             throw new IllegalStateException("JWT secret key is missing");
         }
-        if(this.expiration <= 0){
+        if (this.expiration <= 0) {
             log.warn("JWT expiration is not properly set, using default: 3600 seconds");
         }
     }
 
-    public String generateToken(User user){
+    public String generateToken(User user) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("email", user.getEmail());
-        try{
+        try {
             return Jwts.builder()
                     .setClaims(claims)
                     .setIssuedAt(new Date(System.currentTimeMillis()))
@@ -53,7 +54,7 @@ public class JWTokenUtils {
                     .setAudience("client-web")
                     .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                     .compact();
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("Generate Access Token Fail");
             throw new GlobalException.JwtGenerationException("Khởi tạo Access Token thất bại");
         }
@@ -64,7 +65,7 @@ public class JWTokenUtils {
         return Keys.hmacShaKeyFor(bytesKey);
     }
 
-    private Claims extractAllClaims(String token){
+    private Claims extractAllClaims(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(getSignInKey())
                 .build()
@@ -72,16 +73,25 @@ public class JWTokenUtils {
                 .getBody();
     }
 
-    public <T> T extractClaim(String token, Function<Claims, T> function){
+    public <T> T extractClaim(String token, Function<Claims, T> function) {
         return function.apply(extractAllClaims(token));
     }
 
-    public boolean isTokenExpired(String token){
-        try{
+    public String extractEmail(String token) {
+        return extractClaim(token, Claims::getSubject);
+    }
+
+    public boolean isTokenExpired(String token) {
+        try {
             return this.extractClaim(token, Claims::getExpiration).before(new Date());
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("Failed to check token expiration", e);
             return true;
         }
+    }
+
+    public boolean validateToken(String token, UserDetails userDetails){
+        final String email = extractEmail(token);
+        return email.equals(userDetails.getUsername()) && !isTokenExpired(token);
     }
 }
