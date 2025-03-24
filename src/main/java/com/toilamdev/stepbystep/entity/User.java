@@ -31,7 +31,7 @@ public class User extends BaseEntity implements UserDetails {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false, unique = true, length = 10)
+    @Column(nullable = false, unique = true, length = 20)
     private String phoneNumber;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)

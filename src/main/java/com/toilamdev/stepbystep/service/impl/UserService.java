@@ -64,7 +64,7 @@ public class UserService implements IUserService {
                     .phoneNumber(userRegisterDTO.getPhoneNumber())
                     .build();
 
-            User savedUser = userRepository.save(user);
+            user = userRepository.save(user);
 
             UserRole userRole = UserRole.builder()
                     .role(role)
@@ -73,10 +73,10 @@ public class UserService implements IUserService {
 
             this.userRoleRepository.save(userRole);
 
-            log.info("User {} được lưu thành công với ID: {}", savedUser.getEmail(), savedUser.getId());
-            log.info("UserRole cho user {} được lưu thành công.", savedUser.getEmail());
+            log.info("User {} được lưu thành công với ID: {}", user.getEmail(), user.getId());
+            log.info("UserRole cho user {} được lưu thành công.", user.getEmail());
 
-            return savedUser;
+            return user;
         } catch (GlobalException.RoleNotFoundException e) {
             log.error(e.getMessage(), e);
             throw new RuntimeException("Không tìm thấy Role phù hợp");

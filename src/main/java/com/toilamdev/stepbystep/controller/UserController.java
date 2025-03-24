@@ -57,9 +57,6 @@ public class UserController {
     })
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponseDTO> getUser(@PathVariable @Min(1) int id) {
-        User user = new User();
-        user.setFirstName("Dao");
-        user.setLastName("Nguyen Minh");
-        return this.responseService.success(HttpStatus.OK, "Get user successfully", user);
+        return this.responseService.success(HttpStatus.OK, "Get user successfully");
     }
 }
