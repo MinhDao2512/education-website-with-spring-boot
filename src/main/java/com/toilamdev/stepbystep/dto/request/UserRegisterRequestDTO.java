@@ -6,10 +6,11 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
-import org.springframework.security.core.parameters.P;
+import lombok.Setter;
 
 @Getter
-public class UserRegisterDTO {
+@Setter
+public class UserRegisterRequestDTO {
     @EmailAddress(message = "Email đã tồn tại hoặc không hợp lệ")
     @NotBlank(message = "Bạn chưa nhập thông tin này")
     @Size(max = 100, message = "Số lượng ký tự không được > 100")

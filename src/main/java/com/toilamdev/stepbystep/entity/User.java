@@ -34,6 +34,13 @@ public class User extends BaseEntity implements UserDetails {
     @Column(nullable = false, unique = true, length = 20)
     private String phoneNumber;
 
+    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
+    private Boolean isInstructor;
+
+    @OneToOne
+    @JoinColumn(name = "avatar_id")
+    private Image avatar;
+
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     private Set<UserRole> userRoles;
 

@@ -10,9 +10,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -26,6 +28,7 @@ import java.util.Set;
 public class JWTokenFilter extends OncePerRequestFilter {
     private final JWTokenUtils jwTokenUtils;
     private final UserDetailsService userDetailsService;
+    private final AuthenticationEntryPoint authenticationEntryPoint;
 
     @Value("${api.version:/api/v1}")
     private String apiVersion;
@@ -35,18 +38,19 @@ public class JWTokenFilter extends OncePerRequestFilter {
                                     @Nonnull HttpServletResponse response,
                                     @Nonnull FilterChain filterChain) throws ServletException, IOException {
         final String authHeader = request.getHeader("Authorization");
-        if(isByPassToken(request) || authHeader == null || !authHeader.startsWith("Bearer ")){
+        if (isByPassToken(request) || authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        try{
+        try {
             final String token = authHeader.substring(7);
-            final String email = jwTokenUtils.extractEmail(token);
+            final String email = this.jwTokenUtils.extractEmail(token);
 
             if (email != null && !email.isEmpty() && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = userDetailsService.loadUserByUsername(email);
-                if (jwTokenUtils.validateToken(token, userDetails)) {
+                UserDetails userDetails = this.userDetailsService.loadUserByUsername(email);
+
+                if (this.jwTokenUtils.validateToken(token, userDetails)) {
                     UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                             userDetails, null, userDetails.getAuthorities()
                     );
@@ -54,8 +58,10 @@ public class JWTokenFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                 }
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             log.error("JWT processing failed: {}", e.getMessage(), e);
+            this.authenticationEntryPoint.commence(request, response,
+                    new AuthenticationException(String.format("JWT validation failed: %s", e.getMessage())) {});
         } finally {
             filterChain.doFilter(request, response);
         }

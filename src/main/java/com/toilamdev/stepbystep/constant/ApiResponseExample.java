@@ -67,4 +67,19 @@ public class ApiResponseExample {
               ]
             }
             """;
+
+    public static final String CONFLICT_409 = """
+            {
+              "success": false,
+              "status": 409,
+              "timestamp": "2025-02-27T14:43:40.144Z",
+              "message": "Conflict",
+              "path": "/api/v1/...",
+              "errors": [
+                  {
+                      "field_error_name": "error_message"
+                  }
+              ]
+            }
+            """;
 }

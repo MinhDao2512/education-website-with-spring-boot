@@ -14,12 +14,16 @@ import java.util.Set;
 @Builder
 public class Course extends BaseEntity {
     private String title;
-    private String thumbnail;
+
+    @OneToOne
+    @JoinColumn(name = "thumbnail_id")
+    private Image thumbnail;
+
     private String shortDescription;
     private String description;
     private String requirements;
     private Double price;
-    private Float totalTime;
+    private Long totalDuration;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "instructor_id")

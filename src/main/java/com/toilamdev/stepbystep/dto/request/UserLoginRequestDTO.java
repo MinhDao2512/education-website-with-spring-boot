@@ -2,9 +2,11 @@ package com.toilamdev.stepbystep.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
-public class UserLoginDTO {
+@Setter
+public class UserLoginRequestDTO {
     @NotBlank(message = "Bạn chưa nhập thông tin này")
     private String email;
 

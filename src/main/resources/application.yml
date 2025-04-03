@@ -2,11 +2,8 @@ spring:
   application:
     name: stepbystep
   profiles:
-    active: dev
+    active: ${SPRING_PROFILE_ACTIVE:dev}
   banner:
     location: banner.txt
 api:
   version: /api/v1
-jwt:
-  expiration: 2592000
-  secretKey: 613HeLTRbXK0l3YYk5Ci7SsPz7UVnCmoq7DfCeJqnqkG1WmTiFgA0cSy4IhgAHiPIR7jjvIAcIvkapwF1fjkWw==

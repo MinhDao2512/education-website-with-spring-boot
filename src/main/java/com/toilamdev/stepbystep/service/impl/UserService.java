@@ -1,7 +1,7 @@
 package com.toilamdev.stepbystep.service.impl;
 
-import com.toilamdev.stepbystep.dto.request.UserLoginDTO;
-import com.toilamdev.stepbystep.dto.request.UserRegisterDTO;
+import com.toilamdev.stepbystep.dto.request.UserLoginRequestDTO;
+import com.toilamdev.stepbystep.dto.request.UserRegisterRequestDTO;
 import com.toilamdev.stepbystep.entity.Role;
 import com.toilamdev.stepbystep.entity.User;
 import com.toilamdev.stepbystep.entity.UserRole;
@@ -12,22 +12,18 @@ import com.toilamdev.stepbystep.repository.UserRoleRepository;
 import com.toilamdev.stepbystep.service.IUserService;
 import com.toilamdev.stepbystep.utils.FormatUtils;
 import com.toilamdev.stepbystep.utils.JWTokenUtils;
-import jakarta.servlet.ServletContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Optional;
 
 @Service
 @Slf4j
@@ -52,16 +48,17 @@ public class UserService implements IUserService {
 
     @Override
     @Transactional
-    public User saveUser(UserRegisterDTO userRegisterDTO) {
-        log.info("Bắt đầu tạo user với email: {}", userRegisterDTO.getEmail());
+    public Integer saveUser(UserRegisterRequestDTO userRegisterRequestDTO) {
+        log.info("Bắt đầu tạo user với email: {}", userRegisterRequestDTO.getEmail());
         try {
             Role role = this.roleService.getRoleByName(RoleName.USER);
             User user = User.builder()
-                    .firstName(FormatUtils.formatName(userRegisterDTO.getFirstName()))
-                    .lastName(FormatUtils.formatName(userRegisterDTO.getLastName()))
-                    .email(userRegisterDTO.getEmail())
-                    .password(this.passwordEncoder.encode(userRegisterDTO.getPassword()))
-                    .phoneNumber(userRegisterDTO.getPhoneNumber())
+                    .firstName(FormatUtils.formatName(userRegisterRequestDTO.getFirstName()))
+                    .lastName(FormatUtils.formatName(userRegisterRequestDTO.getLastName()))
+                    .email(userRegisterRequestDTO.getEmail())
+                    .password(this.passwordEncoder.encode(userRegisterRequestDTO.getPassword()))
+                    .phoneNumber(userRegisterRequestDTO.getPhoneNumber())
+                    .isInstructor(false)
                     .build();
 
             user = userRepository.save(user);
@@ -76,7 +73,7 @@ public class UserService implements IUserService {
             log.info("User {} được lưu thành công với ID: {}", user.getEmail(), user.getId());
             log.info("UserRole cho user {} được lưu thành công.", user.getEmail());
 
-            return user;
+            return user.getId();
         } catch (GlobalException.RoleNotFoundException e) {
             log.error(e.getMessage(), e);
             throw new RuntimeException("Không tìm thấy Role phù hợp");
@@ -94,20 +91,28 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public String login(UserLoginDTO userLoginDTO) {
-        log.info("Bắt đầu xác thực tài khoản: {}", userLoginDTO.getEmail());
-        User user = this.userRepository.findUserByEmail(userLoginDTO.getEmail()).orElseThrow(
-                () -> new UsernameNotFoundException("Email hoặc Mật khẩu không hợp lệ")
+    public String login(UserLoginRequestDTO userLoginRequestDTO) {
+        log.info("Bắt đầu xác thực tài khoản: {}", userLoginRequestDTO.getEmail());
+        User user = this.userRepository.findUserByEmail(userLoginRequestDTO.getEmail()).orElseThrow(
+                () -> new UsernameNotFoundException("Email hoặc Mật khẩu không chính xác")
         );
 
-        if (!passwordEncoder.matches(userLoginDTO.getPassword(), user.getPassword())) {
+        if (!passwordEncoder.matches(userLoginRequestDTO.getPassword(), user.getPassword())) {
             throw new BadCredentialsException("Email hoăt Mật khẩu không chính xác");
+        }
+
+        if (!user.getIsActive()) {
+            throw new DisabledException("Tài khoản chưa kích hoạt");
+        }
+
+        if (user.getIsDeleted()) {
+            throw new DisabledException("Tài khoản đã tạm tời bị khóa. Vui lòng liên hệ ADMIN");
         }
 
         Authentication authentication = this.authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        userLoginDTO.getEmail(),
-                        userLoginDTO.getPassword(),
+                        userLoginRequestDTO.getEmail(),
+                        userLoginRequestDTO.getPassword(),
                         user.getAuthorities()
                 )
         );
@@ -115,6 +120,10 @@ public class UserService implements IUserService {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         log.info("Xác thực tài khoản thành công");
-        return this.jwTokenUtils.generateToken(user);
+        return this.jwTokenUtils.generateToken(User.builder()
+                .email(user.getEmail())
+                .userRoles(user.getUserRoles())
+                .isInstructor(user.getIsInstructor())
+                .build());
     }
 }

@@ -27,6 +27,8 @@ public class WebSecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
                         .requestMatchers(HttpMethod.POST, String.format("%s/auth/**", apiVersion)).permitAll()
+                        .requestMatchers(HttpMethod.POST, String.format("%s/roles/**", apiVersion)).permitAll()
+                        .requestMatchers("/swagger-ui/**","/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated())
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(jwTokenAuthenticationEntryPoint))

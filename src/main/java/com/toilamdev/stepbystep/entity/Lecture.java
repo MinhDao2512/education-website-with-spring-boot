@@ -16,12 +16,10 @@ public class Lecture extends BaseEntity {
     @Column(nullable = false)
     private String title;
 
-    private String video;
-    private String document;
-    private float totalTime;
+    @OneToOne(mappedBy = "lecture",fetch = FetchType.EAGER)
+    private Video video;
 
-    @Column(nullable = false)
-    private boolean isPreview;
+    private String document;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "section_id")

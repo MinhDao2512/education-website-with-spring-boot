@@ -34,6 +34,19 @@ public class ApiResponseDTO {
         this.errorDetails = builder.errorDetails;
     }
 
+    @Override
+    public String toString() {
+        return "ApiResponseDTO{" +
+                "success=" + success +
+                ", status=" + status +
+                ", timestamp=" + timestamp +
+                ", message='" + message + '\'' +
+                ", path='" + path + '\'' +
+                ", data=" + data +
+                ", errorDetails=" + errorDetails +
+                '}';
+    }
+
     public static Builder builder() {
         return new Builder();
     }

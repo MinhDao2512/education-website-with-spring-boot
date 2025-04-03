@@ -31,7 +31,7 @@ public class GlobalExceptionHandler {
             bindingResult.getFieldErrors().forEach(fileError
                     -> errors.put(fileError.getField(), fileError.getDefaultMessage()));
 
-            return this.responseService.fail(request, HttpStatus.BAD_REQUEST, "Login fail.", errors);
+            return this.responseService.fail(request, HttpStatus.BAD_REQUEST, "Bad request", errors);
         } else {
             return this.responseService.fail(request, HttpStatus.BAD_REQUEST, "Id must not valid.",
                     Collections.singletonMap("error", e.getMessage()));
