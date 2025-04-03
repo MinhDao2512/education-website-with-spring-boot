@@ -2,9 +2,11 @@ package com.toilamdev.stepbystep.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
-public class UserDTO {
+@Setter
+public class UserRequestDTO {
     @NotBlank(message = "First name must not be null or empty.")
     private String firstName;
 

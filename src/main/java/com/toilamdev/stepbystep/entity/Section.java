@@ -16,7 +16,9 @@ public class Section extends BaseEntity {
     @Column(nullable = false)
     private String title;
 
-    private float totalTime;
+    private Long totalDuration;
+
+    private String objective;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "course_id")

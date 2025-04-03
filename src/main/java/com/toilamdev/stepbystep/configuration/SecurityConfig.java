@@ -1,11 +1,13 @@
 package com.toilamdev.stepbystep.configuration;
 
+import com.toilamdev.stepbystep.entity.User;
 import com.toilamdev.stepbystep.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -20,9 +22,7 @@ public class SecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return (email) ->
-                this.userRepository.findUserByEmail(email).
-                        orElseThrow(() -> new UsernameNotFoundException("Không tìm thấy User với email: " + email));
+        return new MyUserDetailsService(userRepository);
     }
 
     @Bean

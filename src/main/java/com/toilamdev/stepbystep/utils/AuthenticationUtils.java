@@ -8,9 +8,9 @@ import java.util.Optional;
 
 public class AuthenticationUtils {
     public static Optional<String> getPrincipal() {
-        SecurityContext context = SecurityContextHolder.getContext();
-        Authentication authentication = context.getAuthentication();
-        if (!authentication.isAuthenticated() || "anonymousUser".equals(authentication.getPrincipal())) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()
+                || "anonymousUser".equals(authentication.getPrincipal())) {
             return Optional.empty();
         }
         return Optional.ofNullable(authentication.getName());

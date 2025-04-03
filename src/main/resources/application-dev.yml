@@ -1,13 +1,18 @@
 server:
   port: 8080
 spring:
+  servlet:
+    multipart:
+      max-file-size: 2048MB
+      max-request-size: 2048MB
   config:
     activate:
       on-profile: dev
+    import: application-secret.yml
   datasource:
-    url: jdbc:postgresql://localhost:5432/db_stepbystep_website
-    username: postgres
-    password: "060202"
+    url: jdbc:postgresql://${database:localhost}:5432/db_stepbystep_website
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:060202}
     driver-class-name: org.postgresql.Driver
   jpa:
     open-in-view: false
@@ -17,11 +22,6 @@ spring:
     properties:
       hibernate:
         format_sql: true
-springdoc:
-  api-docs:
-    enabled: true
-  swagger-ui:
-    enabled: true
 open:
   api:
     title: Api Document

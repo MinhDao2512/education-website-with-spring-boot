@@ -1,9 +1,15 @@
-FROM openjdk:17
+#Dont hove javadoc, debug,...
+FROM openjdk:17-jdk-slim
 
-ARG FILE_JAR=target/*.jar
+#Working folder in Container
+WORKDIR /app
 
-ADD ${FILE_JAR} api-service.jar
+#Copy file .jar from folder target in project to folder app of container
+ARG FILE_JAR=target/stepbystep-0.0.1-SNAPSHOT.jar
+COPY ${FILE_JAR} edu-app.jar
 
-ENTRYPOINT ["java", "-jar", "api-service.jar"]
+#Expose Port
+EXPOSE 8080
 
-EXPOSE 80
+#Run App Spring Boot
+ENTRYPOINT ["java", "-jar", "edu-app.jar"]

@@ -12,4 +12,34 @@ public class GlobalException {
             super(message);
         }
     }
+
+    public static class NotCreateRolesException extends RuntimeException{
+        public NotCreateRolesException(String message){
+            super(message);
+        }
+    }
+
+    public static class CategoryNotFoundException extends RuntimeException{
+        public CategoryNotFoundException(String message){
+            super(message);
+        }
+    }
+
+    public static class TagNotFoundException extends RuntimeException{
+        public TagNotFoundException(String message){
+            super(message);
+        }
+    }
+
+    public static class CourseNotFoundException extends RuntimeException{
+        public CourseNotFoundException(String message){
+            super(message);
+        }
+    }
+
+    public static class SectionNotFoundException extends RuntimeException{
+        public SectionNotFoundException(String message){
+            super(message);
+        }
+    }
 }

@@ -14,6 +14,11 @@ import java.util.Set;
 @Builder
 public class Post extends BaseEntity {
     private String title;
+
+    @OneToOne
+    @JoinColumn(name = "thumbnail_id")
+    private Image thumbnail;
+
     private String content;
     private Integer totalLikes;
     private Integer totalDislikes;

@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  database:
+    image: 'postgres:latest'
+    container_name: 'postgre_db'
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 060202
+      POSTGRES_DB: db_stepbystep_website
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      retries: 5
+      timeout: 5s
+    networks:
+      - backend
+
+  backend:
+    image: 'stepbystep:1.0.0-SNAPSHOT'
+    build:
+      context: .
+    container_name: app-container
+    restart: unless-stopped
+    depends_on:
+      database:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/db_stepbystep_website
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: "060202"
+      SPRING_PROFILES_ACTIVE: dev
+    ports:
+      - "8080:8080"
+    networks:
+      - backend
+
+volumes:
+  postgres_data:
+
+networks:
+  backend:
+    driver: bridge
