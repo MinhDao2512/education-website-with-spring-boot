@@ -21,7 +21,7 @@ public class Video extends BaseEntity{
     @Enumerated(EnumType.STRING)
     private MediaStatus status;
 
-    private Float size;
+    private Long size;
 
     private Boolean isPreview;
 
