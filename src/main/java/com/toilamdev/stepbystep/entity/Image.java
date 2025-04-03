@@ -16,7 +16,6 @@ public class Image extends BaseEntity{
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false)
     private String viewUrl;
 
     @Column(nullable = false)
@@ -26,7 +25,7 @@ public class Image extends BaseEntity{
     @Enumerated(EnumType.STRING)
     private MediaStatus status;
 
-    private Float size;
+    private Long size;
 
     @OneToOne(mappedBy = "avatar")
     private User user;

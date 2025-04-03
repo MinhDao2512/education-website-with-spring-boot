@@ -26,7 +26,8 @@ public class LectureController {
     private final LectureService lectureService;
 
     @PostMapping
-    public ResponseEntity<ApiResponseDTO> createNewLecture(HttpServletRequest request, @Valid @RequestBody LectureRequestDTO lectureRequestDTO){
+    public ResponseEntity<ApiResponseDTO> createNewLecture(HttpServletRequest request,
+                                                           @Valid @RequestBody LectureRequestDTO lectureRequestDTO){
         try {
             return this.responseService.success(HttpStatus.CREATED, "Create new lecture success",
                     Collections.singletonMap("lecture_id", this.lectureService.addNewLecture(lectureRequestDTO)));
