@@ -8,10 +8,14 @@ import com.toilamdev.stepbystep.repository.*;
 import com.toilamdev.stepbystep.service.IMediaService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import ws.schild.jave.MultimediaObject;
+import ws.schild.jave.info.MultimediaInfo;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Random;
 import java.util.UUID;
@@ -21,6 +25,8 @@ import java.util.UUID;
 @Slf4j
 public class MediaService implements IMediaService {
     private static final long MAX_FILE_SIZE = 500 * 1024 * 1024; // Giới hạn 500MB
+    private static final String[] prefixFileName = {"image-course-thumbnail", "image-post-thumbnail", "image-avatar",
+            "video-lecture"};
 
     private final LectureRepository lectureRepository;
     private final VideoRepository videoRepository;
@@ -42,10 +48,12 @@ public class MediaService implements IMediaService {
             String fileName = generateUniqueFileName(originalFileName);
 
             return switch (mediaType) {
-                case "video-lecture" -> uploadVideo(file, fileName, id);
-                case "image-course-thumbnail" -> uploadCourseThumbnail(file, fileName, id);
-                case "image-post-thumbnail" -> uploadPostThumbnail(file, fileName, id);
-                default -> uploadUserAvatar(file, fileName, id);
+                case "video-lecture" -> uploadVideo(file, String.format("%s_%s", this.prefixFileName[3], fileName), id);
+                case "image-course-thumbnail" -> uploadCourseThumbnail(file, String.format("%s_%s", this.prefixFileName[0],
+                        fileName), id);
+                case "image-post-thumbnail" -> uploadPostThumbnail(file, String.format("%s_%s", this.prefixFileName[1],
+                        fileName), id);
+                default -> uploadUserAvatar(file, String.format("%s_%s", this.prefixFileName[2], fileName), id);
             };
         } catch (Exception e) {
             log.error("Có lỗi xảy ra trong quá trình upload file: {}", e.getMessage(), e);
@@ -85,7 +93,7 @@ public class MediaService implements IMediaService {
                 .title(fileName)
                 .lecture(lecture)
                 .quality("Full HD-1080")
-                .isPreview(true)
+                .isPreview(false)
                 .size(file.getSize())
                 .status(MediaStatus.UPLOADING)
                 .build());
@@ -94,12 +102,33 @@ public class MediaService implements IMediaService {
 
         video.setDriveFileId(driveFileId);
         video.setStatus(MediaStatus.READY);
+        video.setDuration(getDurationInSeconds(file));
         video.setViewUrl(googleDriveService.getViewUrl(driveFileId));
 
         video = videoRepository.save(video);
 
         log.info("Upload video thành công");
         return video.getViewUrl();
+    }
+
+    private long getDurationInSeconds(MultipartFile file) throws IOException {
+        File tempFile = null;
+        try {
+            tempFile = File.createTempFile("uploaded-video", file.getOriginalFilename());
+            file.transferTo(tempFile);
+
+            return new MultimediaObject(tempFile).getInfo().getDuration() / 1000;
+        } catch (Exception e) {
+            log.error("Lỗi khi xử lý video: {}", e.getMessage(), e);
+            if (tempFile != null) {
+                tempFile.delete();
+            }
+            throw new RuntimeException("Lỗi khi xử lý video: " + e.getMessage(), e);
+        } finally {
+            if (tempFile != null) {
+                tempFile.delete();
+            }
+        }
     }
 
     private String uploadCourseThumbnail(MultipartFile file, String fileName, Integer id) throws IOException {

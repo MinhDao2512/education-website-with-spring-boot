@@ -1,6 +1,6 @@
 package com.toilamdev.stepbystep.controller;
 
-import com.toilamdev.stepbystep.dto.request.LectureRequestDTO;
+import com.toilamdev.stepbystep.dto.request.LectureUpdateRequestDTO;
 import com.toilamdev.stepbystep.dto.response.ApiResponseDTO;
 import com.toilamdev.stepbystep.service.impl.LectureService;
 import com.toilamdev.stepbystep.service.impl.ResponseService;
@@ -10,10 +10,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 
@@ -25,14 +22,25 @@ public class LectureController {
     private final ResponseService responseService;
     private final LectureService lectureService;
 
-    @PostMapping
-    public ResponseEntity<ApiResponseDTO> createNewLecture(HttpServletRequest request,
-                                                           @Valid @RequestBody LectureRequestDTO lectureRequestDTO){
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponseDTO> updateLecture(HttpServletRequest request, @PathVariable("id") Integer lectureId,
+                                                        @Valid @RequestBody LectureUpdateRequestDTO lectureUpdateRequestDTO) {
         try {
-            return this.responseService.success(HttpStatus.CREATED, "Create new lecture success",
-                    Collections.singletonMap("lecture_id", this.lectureService.addNewLecture(lectureRequestDTO)));
-        } catch (RuntimeException e){
-            return this.responseService.fail(request, HttpStatus.CONFLICT, "Create new lecture fail");
+            this.lectureService.modifierLecture(lectureId, lectureUpdateRequestDTO);
+            return this.responseService.success(HttpStatus.NO_CONTENT, "Update lecture success");
+        } catch (RuntimeException e) {
+            return this.responseService.fail(request, HttpStatus.CONFLICT, "Update lecture fail");
+        }
+    }
+
+    @DeleteMapping
+    public ResponseEntity<ApiResponseDTO> deleteLecture(HttpServletRequest request, @RequestParam("id") Integer lectureId) {
+        try {
+            this.lectureService.deleteLecture(lectureId);
+            return this.responseService.success(HttpStatus.NO_CONTENT, "Delete lecture success");
+        } catch (RuntimeException e) {
+            return this.responseService.fail(request, HttpStatus.CONFLICT, "Delete lecture fail",
+                    Collections.singletonMap("message_error", e.getMessage()));
         }
     }
 }

@@ -37,4 +37,12 @@ public interface IUserService {
      * @throws com.toilamdev.stepbystep.exception.GlobalException.JwtGenerationException Không thể tạo Access Token.
      */
     String login(UserLoginRequestDTO userLoginRequestDTO);
+
+    /**
+     * Cập nhật User trở thành Instructor
+     *
+     * @return {@link Integer} Trả về Id của người dùng
+     * @throws org.springframework.security.core.userdetails.UsernameNotFoundException Nếu không tìm thấy người dùng với Email
+     */
+    Integer updateUserIsInstructor();
 }

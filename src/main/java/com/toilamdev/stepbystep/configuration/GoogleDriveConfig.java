@@ -24,11 +24,11 @@ import java.util.List;
 
 @Configuration
 public class GoogleDriveConfig {
-    private static final String APPLICATION_NAME = "Web client 1";
+    private static final String APPLICATION_NAME = "Web client 2";
     private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
     private static final String TOKENS_DIRECTORY_PATH = "tokens";
     private static final List<String> SCOPES = Collections.singletonList(DriveScopes.DRIVE);
-    private static final String CREDENTIALS_FILE_PATH = "/credentials.json";
+    private static final String CREDENTIALS_FILE_PATH = "/client_secret.json";
 
     @Bean
     public Drive driveService() throws IOException, GeneralSecurityException {
@@ -48,6 +48,7 @@ public class GoogleDriveConfig {
                 HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
                 .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(TOKENS_DIRECTORY_PATH)))
                 .setAccessType("offline")
+                .setApprovalPrompt("auto")
                 .build();
 
         LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();

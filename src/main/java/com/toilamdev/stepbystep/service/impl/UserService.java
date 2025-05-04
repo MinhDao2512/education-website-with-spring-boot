@@ -101,11 +101,7 @@ public class UserService implements IUserService {
             throw new BadCredentialsException("Email hoăt Mật khẩu không chính xác");
         }
 
-        if (!user.getIsActive()) {
-            throw new DisabledException("Tài khoản chưa kích hoạt");
-        }
-
-        if (user.getIsDeleted()) {
+        if (user.isDeleted()) {
             throw new DisabledException("Tài khoản đã tạm tời bị khóa. Vui lòng liên hệ ADMIN");
         }
 
@@ -125,5 +121,26 @@ public class UserService implements IUserService {
                 .userRoles(user.getUserRoles())
                 .isInstructor(user.getIsInstructor())
                 .build());
+    }
+
+    @Override
+    public Integer updateUserIsInstructor() {
+        log.info("Bắt đầu cập nhật user trở thành instructor");
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+            User user = this.userRepository.findUserByEmail(authentication.getName()).orElseThrow(
+                    () -> new UsernameNotFoundException(String.format("Không tìm thấy User phù hợp với email: %s",
+                            authentication.getName()))
+            );
+
+            user.setIsInstructor(true);
+
+            user = this.userRepository.save(user);
+            return user.getId();
+        } catch (Exception e) {
+            log.error("Cập nhật user không thành công: {}", e.getMessage(), e);
+            throw new RuntimeException();
+        }
     }
 }

@@ -20,7 +20,8 @@ public class ResponseService implements IResponseService {
                 .message(message)
                 .data(data)
                 .build();
-        return ResponseEntity.status(httpStatus).body(responseDTO);
+        return httpStatus == HttpStatus.NO_CONTENT ? ResponseEntity.status(HttpStatus.OK).body(responseDTO) :
+                ResponseEntity.status(httpStatus).body(responseDTO);
     }
 
     @Override
