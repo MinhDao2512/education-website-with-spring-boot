@@ -21,6 +21,8 @@ public class Lecture extends BaseEntity {
 
     private String document;
 
+    private Integer orderOfLecture;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "section_id")
     private Section section;

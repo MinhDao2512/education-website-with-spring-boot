@@ -18,11 +18,7 @@ public class MyUserDetailsService implements UserDetailsService {
                 () -> new UsernameNotFoundException("Email hoặc Mật khẩu không chính xác")
         );
 
-        if (!user.getIsActive()) {
-            throw new DisabledException("Tài khoản chưa kích hoạt");
-        }
-
-        if (user.getIsDeleted()) {
+        if (user.isDeleted()) {
             throw new DisabledException("Tài khoản đã bị vô hóa. Hãy liên hệ với ADMIN");
         }
 

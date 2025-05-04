@@ -1,7 +1,10 @@
 package com.toilamdev.stepbystep.entity;
 
+import com.toilamdev.stepbystep.enums.CourseLabel;
+import com.toilamdev.stepbystep.enums.CourseStatus;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Filter;
 
 import java.util.Set;
 
@@ -19,11 +22,16 @@ public class Course extends BaseEntity {
     @JoinColumn(name = "thumbnail_id")
     private Image thumbnail;
 
-    private String shortDescription;
     private String description;
     private String requirements;
     private Double price;
     private Long totalDuration;
+
+    @Enumerated(EnumType.STRING)
+    private CourseStatus status;
+
+    @Enumerated(EnumType.STRING)
+    private CourseLabel label;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "instructor_id")

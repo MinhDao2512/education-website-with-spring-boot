@@ -14,11 +14,7 @@ import java.util.Set;
 public class CourseRequestDTO {
     @NotBlank(message = "Course title is required")
     @Size(max = 255, message = "Course title must not exceed 255 characters")
-    private String courseTitle;
-
-    @NotBlank(message = "Short description is required")
-    @Size(max = 500, message = "Short description must not exceed 500 characters")
-    private String shortDescription;
+    private String title;
 
     @NotBlank(message = "Description is required")
     private String description;

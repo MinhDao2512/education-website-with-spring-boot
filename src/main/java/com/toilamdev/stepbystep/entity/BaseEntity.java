@@ -15,11 +15,7 @@ public abstract class BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(nullable = false)
-    private Boolean isActive;
-
-    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
-    private Boolean isDeleted;
+    private boolean isDeleted;
 
     @Version
     @Column(nullable = false)
@@ -44,7 +40,6 @@ public abstract class BaseEntity {
     public void create() {
         this.createdBy = AuthenticationUtils.getPrincipal().orElse("PRODUCT OWNER");
         this.createdAt = Instant.now();
-        this.isActive = true;
         this.isDeleted = false;
     }
 

@@ -62,7 +62,7 @@ public class GoogleDriveService implements IGoogleDriveService {
     }
 
     public String getViewUrl(String fileId) {
-        return "https://drive.google.com/file/d/" + fileId + "/view";
+        return "https://drive.google.com/file/d/" + fileId + "/preview";
     }
 
     public void deleteFile(String fileId) throws IOException {

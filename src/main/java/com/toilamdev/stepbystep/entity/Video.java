@@ -17,13 +17,11 @@ public class Video extends BaseEntity{
     private String driveFileId;
     private String viewUrl;
     private Long duration;
+    private boolean isPreview;
+    private Long size;
 
     @Enumerated(EnumType.STRING)
     private MediaStatus status;
-
-    private Long size;
-
-    private Boolean isPreview;
 
     @OneToOne
     @JoinColumn(name = "lecture_id")
