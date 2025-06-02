@@ -24,7 +24,7 @@ public class Section extends BaseEntity {
     @JoinColumn(name = "course_id")
     private Course course;
 
-    private Integer orderOfSection;
+    private Integer sectionOrder;
 
     @OneToMany(mappedBy = "section", fetch = FetchType.LAZY)
     private Set<Lecture> lectures;

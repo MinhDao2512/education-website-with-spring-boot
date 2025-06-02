@@ -1,7 +1,6 @@
 package com.toilamdev.stepbystep.service.impl;
 
 import com.toilamdev.stepbystep.dto.request.SectionRequestDTO;
-import com.toilamdev.stepbystep.dto.request.SectionUpdateRequestDTO;
 import com.toilamdev.stepbystep.entity.Course;
 import com.toilamdev.stepbystep.entity.Section;
 import com.toilamdev.stepbystep.exception.GlobalException;
@@ -29,7 +28,7 @@ public class SectionService implements ISectionService {
             Section section = Section.builder()
                     .title(sectionRequestDTO.getTitle())
                     .objective(sectionRequestDTO.getObjective())
-                    .orderOfSection(sectionRequestDTO.getOrderOfSection())
+                    .sectionOrder(sectionRequestDTO.getSectionOrder())
                     .course(course)
                     .build();
 
@@ -44,15 +43,16 @@ public class SectionService implements ISectionService {
     }
 
     @Override
-    public void modifierSection(Integer sectionId, SectionUpdateRequestDTO sectionUpdateRequestDTO) {
+    public void modifierSection(Integer sectionId, SectionRequestDTO sectionRequestDTO) {
         log.info("Bắt đầu cập nhật thông tin cho Section với ID: {}", sectionId);
         try {
             Section section = sectionRepository.findById(sectionId)
                     .orElseThrow(() -> new GlobalException.SectionNotFoundException(
                             String.format("Không tìm thấy Section với Id = %d", sectionId)));
 
-            section.setTitle(sectionUpdateRequestDTO.getSectionTitle());
-            section.setObjective(sectionUpdateRequestDTO.getObjective());
+            section.setTitle(sectionRequestDTO.getTitle());
+            section.setObjective(sectionRequestDTO.getObjective());
+            section.setSectionOrder(sectionRequestDTO.getSectionOrder());
 
             sectionRepository.save(section);
             log.info("Cập nhật thành công Section có Id = {}", sectionId);
@@ -70,6 +70,7 @@ public class SectionService implements ISectionService {
                     .orElseThrow(() -> new GlobalException.SectionNotFoundException("Không tìm thấy Section tương ứng"));
 
             section.setDeleted(true);
+
             sectionRepository.save(section);
             log.info("Xóa section thành công với ID: {}", sectionId);
         } catch (Exception e) {

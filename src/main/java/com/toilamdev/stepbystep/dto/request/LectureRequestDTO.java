@@ -16,7 +16,7 @@ public class LectureRequestDTO {
 
     private String document;
 
-    @NotNull(message = "Order of lecture is required")
-    @Min(value = 1, message = "Order of lecture must not < 1")
-    private Integer orderOfLecture;
+    @NotNull(message = "Lecture order is required")
+    @Min(value = 1, message = "Lecture order must not < 1")
+    private Integer lectureOrder;
 }

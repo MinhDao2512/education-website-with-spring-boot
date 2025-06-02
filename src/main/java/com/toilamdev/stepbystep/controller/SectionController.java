@@ -1,7 +1,7 @@
 package com.toilamdev.stepbystep.controller;
 
 import com.toilamdev.stepbystep.dto.request.LectureRequestDTO;
-import com.toilamdev.stepbystep.dto.request.SectionUpdateRequestDTO;
+import com.toilamdev.stepbystep.dto.request.SectionRequestDTO;
 import com.toilamdev.stepbystep.dto.response.ApiResponseDTO;
 import com.toilamdev.stepbystep.service.impl.LectureService;
 import com.toilamdev.stepbystep.service.impl.ResponseService;
@@ -42,9 +42,9 @@ public class SectionController {
     }
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponseDTO> updateSection(HttpServletRequest request, @PathVariable("id") Integer sectionId,
-                                                        @Valid @RequestBody SectionUpdateRequestDTO sectionUpdateRequestDTO) {
+                                                        @Valid @RequestBody SectionRequestDTO sectionRequestDTO) {
         try {
-            this.sectionService.modifierSection(sectionId, sectionUpdateRequestDTO);
+            this.sectionService.modifierSection(sectionId, sectionRequestDTO);
             return this.responseService.success(HttpStatus.NO_CONTENT, "Update section success");
         } catch (RuntimeException e) {
             return this.responseService.fail(request, HttpStatus.CONFLICT, "Update section fail",
@@ -52,8 +52,8 @@ public class SectionController {
         }
     }
 
-    @DeleteMapping
-    public ResponseEntity<ApiResponseDTO> deleteSection(HttpServletRequest request, @RequestParam("id") Integer sectionId) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponseDTO> deleteSection(HttpServletRequest request, @PathVariable("id") Integer sectionId) {
         try {
             this.sectionService.deleteSection(sectionId);
             return this.responseService.success(HttpStatus.NO_CONTENT, "Delete section success");

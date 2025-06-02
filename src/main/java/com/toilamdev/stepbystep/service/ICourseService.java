@@ -1,8 +1,8 @@
 package com.toilamdev.stepbystep.service;
 
 import com.toilamdev.stepbystep.dto.request.CourseRequestDTO;
-import com.toilamdev.stepbystep.entity.Course;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface ICourseService {
-    int createNewCourse(CourseRequestDTO courseRequestDTO);
+    int createNewCourse(CourseRequestDTO courseRequestDTO, MultipartFile thumbnail);
 }
