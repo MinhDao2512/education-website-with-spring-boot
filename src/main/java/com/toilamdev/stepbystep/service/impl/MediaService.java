@@ -49,15 +49,27 @@ public class MediaService implements IMediaService {
 
             return switch (mediaType) {
                 case "video-lecture" -> uploadVideo(file, String.format("%s_%s", this.prefixFileName[3], fileName), id);
-                case "image-course-thumbnail" -> uploadCourseThumbnail(file, String.format("%s_%s", this.prefixFileName[0],
+                case "course-thumbnail" -> uploadCourseThumbnail(file, String.format("%s_%s", this.prefixFileName[0],
                         fileName), id);
-                case "image-post-thumbnail" -> uploadPostThumbnail(file, String.format("%s_%s", this.prefixFileName[1],
+                case "post-thumbnail" -> uploadPostThumbnail(file, String.format("%s_%s", this.prefixFileName[1],
                         fileName), id);
                 default -> uploadUserAvatar(file, String.format("%s_%s", this.prefixFileName[2], fileName), id);
             };
         } catch (Exception e) {
             log.error("Có lỗi xảy ra trong quá trình upload file: {}", e.getMessage(), e);
             throw new RuntimeException("Lỗi khi upload file: " + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public void handleDeleteFile(String driverFileId) {
+        log.info("Bắt đầu xóa file trên Google Driver");
+        try{
+            googleDriveService.deleteFile(driverFileId);
+            log.info("Xóa file với driver file id = {} thành công", driverFileId);
+        }catch (Exception e){
+            log.error("Có lỗi xảy ra trong quá trình xóa dile: {}", e.getMessage());
+            throw  new RuntimeException("Lỗi khi delete file" + e.getMessage());
         }
     }
 
@@ -131,8 +143,8 @@ public class MediaService implements IMediaService {
         }
     }
 
-    private String uploadCourseThumbnail(MultipartFile file, String fileName, Integer id) throws IOException {
-        Course course = courseRepository.findById(id).orElseThrow(
+    private String uploadCourseThumbnail(MultipartFile file, String fileName, Integer courseId) throws IOException {
+        Course course = courseRepository.findById(courseId).orElseThrow(
                 () -> new GlobalException.CourseNotFoundException("Không tìm thấy Course phù hợp")
         );
 

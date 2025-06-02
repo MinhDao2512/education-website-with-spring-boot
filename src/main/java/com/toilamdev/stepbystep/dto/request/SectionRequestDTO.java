@@ -17,7 +17,7 @@ public class SectionRequestDTO {
     @Size(max = 255, message = "Objective must not exceed 255 characters")
     private String objective;
 
-    @Min(value = 1, message = "Order of section must not < 1")
-    @NotNull(message = "Order of section is required")
-    private Integer orderOfSection;
+    @Min(value = 1, message = "Section order must not < 1")
+    @NotNull(message = "Section order is required")
+    private Integer sectionOrder;
 }

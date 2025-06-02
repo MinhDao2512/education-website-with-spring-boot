@@ -1,5 +1,6 @@
 package com.toilamdev.stepbystep.service.impl;
 
+import com.toilamdev.stepbystep.constant.TypeFileUpload;
 import com.toilamdev.stepbystep.dto.request.CourseRequestDTO;
 import com.toilamdev.stepbystep.entity.Category;
 import com.toilamdev.stepbystep.entity.Course;
@@ -19,6 +20,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -31,9 +33,10 @@ public class CourseService implements ICourseService {
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
     private final TagRepository tagRepository;
+    private final MediaService mediaService;
 
     @Override
-    public int createNewCourse(CourseRequestDTO courseRequestDTO) {
+    public int createNewCourse(CourseRequestDTO courseRequestDTO, MultipartFile thumbnail) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             User currentUser = this.userRepository.findUserByEmail(authentication.getName()).orElseThrow(
@@ -69,6 +72,9 @@ public class CourseService implements ICourseService {
                     .build();
 
             newCourse = courseRepository.save(newCourse);
+
+            this.mediaService.handleUploadFile(thumbnail, TypeFileUpload.COURSE_THUMBNAIL, newCourse.getId());
+
             return newCourse.getId();
         } catch (RuntimeException e) {
             throw e;

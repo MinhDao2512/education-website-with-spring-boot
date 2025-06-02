@@ -22,6 +22,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collections;
 
@@ -38,20 +39,21 @@ public class CourseController {
     @Operation(summary = "Create new course", description = "Add new course")
     @ApiResponses(value = {
             @ApiResponse(description = "Created", responseCode = "201", content = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    mediaType = MediaType.MULTIPART_FORM_DATA_VALUE,
                     examples = @ExampleObject(value = ApiResponseExample.CREATED_201)
             )),
             @ApiResponse(description = "Bad request", responseCode = "400", content = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    mediaType = MediaType.MULTIPART_FORM_DATA_VALUE,
                     examples = @ExampleObject(value = ApiResponseExample.BAD_REQUEST_400)
             ))
     })
-    @PostMapping
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponseDTO> addNewCourse(HttpServletRequest request,
-                                                       @Valid @RequestBody CourseRequestDTO courseRequestDTO) {
+                                                       @RequestPart("thumbnailFile") MultipartFile thumbnailFile,
+                                                       @Valid @RequestPart("courseRequestData") CourseRequestDTO courseRequestDTO) {
         try {
-            return this.responseService.success(HttpStatus.CREATED, "Add new course success",
-                    Collections.singletonMap("course_id", this.courseService.createNewCourse(courseRequestDTO)));
+            return this.responseService.success(HttpStatus.CREATED,"Create new course success",
+                    Collections.singletonMap("courseId", this.courseService.createNewCourse(courseRequestDTO, thumbnailFile)));
         } catch (RuntimeException e) {
             return this.responseService.fail(request, HttpStatus.CONFLICT, "Create new course fail",
                     Collections.singletonMap("message_detail", e.getMessage()));
